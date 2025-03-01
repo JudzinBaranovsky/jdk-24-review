@@ -1,0 +1,31 @@
+subprojects {
+
+    group = 'org.bananalaba.jdk24'
+    version = "$rev_project"
+
+    apply plugin: 'java'
+
+    sourceCompatibility = '1.23'
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+
+    tasks.withType(JavaCompile).each {
+        it.options.compilerArgs.add('--enable-preview')
+    }
+
+    test {
+        useJUnitPlatform()
+        jvmArgs(['--enable-preview'])
+    }
+
+    dependencies {
+        testImplementation "org.junit.jupiter:junit-jupiter:$rev_junit"
+        testImplementation "org.mockito:mockito-core:$rev_mockito"
+        testImplementation "org.mockito:mockito-junit-jupiter:$rev_mockito"
+        testImplementation "org.assertj:assertj-core:$rev_assertj"
+    }
+
+}
