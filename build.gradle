@@ -26,6 +26,12 @@ subprojects {
         testImplementation "org.mockito:mockito-core:$rev_mockito"
         testImplementation "org.mockito:mockito-junit-jupiter:$rev_mockito"
         testImplementation "org.assertj:assertj-core:$rev_assertj"
+
+        compileOnly "org.projectlombok:lombok:$rev_lombok"
+        annotationProcessor "org.projectlombok:lombok:$rev_lombok"
+
+        testCompileOnly "org.projectlombok:lombok:$rev_lombok"
+        testAnnotationProcessor "org.projectlombok:lombok:$rev_lombok"
     }
 
 }
