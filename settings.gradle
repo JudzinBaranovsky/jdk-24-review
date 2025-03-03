@@ -1,2 +1,3 @@
 include 'stream-gatherers'
+include 'primitive-pattern-matching'
 
