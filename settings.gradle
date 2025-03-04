@@ -1,3 +1,4 @@
 include 'stream-gatherers'
 include 'primitive-pattern-matching'
+include 'structured-concurrency'
 
