@@ -1,4 +1,4 @@
-package org.bananalaba.jdk24;
+package org.bananalaba.jdk24.invoice;
 
 import java.util.List;
 import lombok.NonNull;

@@ -1,4 +1,4 @@
-package org.bananalaba.jdk24;
+package org.bananalaba.jdk24.invoice;
 
 public interface CustomerService {
 
