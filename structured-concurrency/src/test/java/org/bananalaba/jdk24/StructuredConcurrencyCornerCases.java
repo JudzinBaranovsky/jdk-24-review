@@ -82,4 +82,19 @@ public class StructuredConcurrencyCornerCases {
         }
     }
 
+    @Test
+    void shouldRunOnPlatformThread() {
+        try (var scope = new StructuredTaskScope.ShutdownOnFailure("platform-scope", Thread.ofPlatform().factory())) {
+            scope.fork(() -> {
+                log.info("running in a platform thread is possible yet not recommended");
+                return null;
+            });
+
+            scope.join();
+            scope.throwIfFailed();
+        } catch (Exception e) {
+            throw new RuntimeException();
+        }
+    }
+
 }
