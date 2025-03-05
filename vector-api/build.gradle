@@ -1,0 +1,8 @@
+tasks.withType(JavaCompile).each {
+    it.options.compilerArgs.addAll(List.of("--enable-preview", "--add-modules", "jdk.incubator.vector"))
+}
+
+test {
+    useJUnitPlatform()
+    jvmArgs(["--enable-preview", "--add-modules", "jdk.incubator.vector"])
+}
