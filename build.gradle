@@ -32,9 +32,6 @@ subprojects {
 
         testCompileOnly "org.projectlombok:lombok:$rev_lombok"
         testAnnotationProcessor "org.projectlombok:lombok:$rev_lombok"
-
-        implementation "org.apache.logging.log4j:log4j-slf4j-impl:$rev_log4j"
-        implementation "org.slf4j:slf4j-api:$rev_slf4j"
     }
 
 }
