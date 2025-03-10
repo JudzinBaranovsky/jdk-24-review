@@ -1,6 +1,7 @@
 plugins {
     id 'org.springframework.boot' version "3.3.5"
     id 'io.spring.dependency-management' version "1.1.6"
+    id "me.champeau.jmh" version "0.7.2"
 }
 
 dependencies {
@@ -22,13 +23,14 @@ if (aotMode == 'configure') {
     extraBootRunJvmArgs = ["-XX:AOTCache=main.aot"]
 }
 
+var jdk24Launcher = javaToolchains.launcherFor {
+    languageVersion = JavaLanguageVersion.of(24)
+    vendor = JvmVendorSpec.matching("Oracle")
+}
 tasks.register('aotRun', JavaExec) {
     classpath = files(tasks.bootJar)
     jvmArgs = extraBootRunJvmArgs
-    javaLauncher = javaToolchains.launcherFor {
-        languageVersion = JavaLanguageVersion.of(24)
-        vendor = JvmVendorSpec.matching("Oracle")
-    }
+    javaLauncher = jdk24Launcher
 }
 
 tasks.register('stopWebApp') {
@@ -45,4 +47,9 @@ tasks.register('stopWebApp') {
             throw new RuntimeException("failed to stop the application");
         }
     }
+}
+
+jmh {
+    jvmArgs = extraBootRunJvmArgs
+    jvm = jdk24Launcher.get().getExecutablePath().getAsFile().getAbsolutePath()
 }
