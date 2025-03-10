@@ -12,7 +12,13 @@ public class MessageStore {
     private final Map<String, Message> messages = new ConcurrentHashMap<>();
 
     public Message getMessage(final @NonNull String key) {
-        return messages.get(key);
+        var message = messages.get(key);
+
+        if (message == null) {
+            throw new DataNotFoundException("message not found for key=" + key);
+        }
+
+        return message;
     }
 
     public void putMessage(final @NonNull Message message) {
