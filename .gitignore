@@ -9,3 +9,6 @@ gradle-app.setting
 !gradle-wrapper.jar
 .gradletasknamecache
 *~
+
+*.aotconf
+*.aot

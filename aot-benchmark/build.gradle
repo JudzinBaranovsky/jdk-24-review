@@ -12,8 +12,23 @@ dependencies {
     testImplementation "io.rest-assured:rest-assured:5.5.1"
 }
 
-bootRun {
-    jvmArgs = ["-XX:ArchiveClassesAtExit=application.jsa"]
+var aotMode = System.getProperty("aotMode");
+var extraBootRunJvmArgs = [];
+if (aotMode == 'configure') {
+    extraBootRunJvmArgs = ["-XX:AOTMode=record", "-XX:AOTConfiguration=app.aotconf"]
+} else if (aotMode == 'record') {
+    extraBootRunJvmArgs = ["-XX:AOTMode=create", "-XX:AOTConfiguration=app.aotconf", "-XX:AOTCache=main.aot"]
+} else if (aotMode == 'run') {
+    extraBootRunJvmArgs = ["-XX:AOTCache=main.aot"]
+}
+
+task aotRun(type: JavaExec) {
+    classpath = files(tasks.bootJar)
+    jvmArgs = extraBootRunJvmArgs
+    javaLauncher = javaToolchains.launcherFor {
+        languageVersion = JavaLanguageVersion.of(24)
+        vendor = JvmVendorSpec.matching("Oracle")
+    }
 }
 
 tasks.register('stopWebApp') {
