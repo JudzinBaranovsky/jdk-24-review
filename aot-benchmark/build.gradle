@@ -22,7 +22,7 @@ if (aotMode == 'configure') {
     extraBootRunJvmArgs = ["-XX:AOTCache=main.aot"]
 }
 
-task aotRun(type: JavaExec) {
+tasks.register('aotRun', JavaExec) {
     classpath = files(tasks.bootJar)
     jvmArgs = extraBootRunJvmArgs
     javaLauncher = javaToolchains.launcherFor {
