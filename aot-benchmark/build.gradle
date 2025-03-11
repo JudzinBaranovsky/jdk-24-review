@@ -1,7 +1,6 @@
 plugins {
     id 'org.springframework.boot' version "3.3.5"
     id 'io.spring.dependency-management' version "1.1.6"
-    id "me.champeau.jmh" version "0.7.2"
 }
 
 dependencies {
@@ -13,28 +12,19 @@ dependencies {
     testImplementation "io.rest-assured:rest-assured:5.5.1"
 }
 
-var aotMode = System.getProperty("aotMode");
-var extraBootRunJvmArgs = [];
-if (aotMode == 'configure') {
-    extraBootRunJvmArgs = ["-XX:AOTMode=record", "-XX:AOTConfiguration=app.aotconf"]
-} else if (aotMode == 'record') {
-    extraBootRunJvmArgs = ["-XX:AOTMode=create", "-XX:AOTConfiguration=app.aotconf", "-XX:AOTCache=main.aot"]
-} else if (aotMode == 'run') {
-    extraBootRunJvmArgs = ["-XX:AOTCache=main.aot"]
-}
-
 var jdk24Launcher = javaToolchains.launcherFor {
     languageVersion = JavaLanguageVersion.of(24)
     vendor = JvmVendorSpec.matching("Oracle")
 }
-tasks.register('aotRun', JavaExec) {
+
+tasks.register('runAotLinkingConfig', JavaExec) {
     classpath = files(tasks.bootJar)
-    jvmArgs = extraBootRunJvmArgs
+    jvmArgs = ["-XX:AOTMode=record", "-XX:AOTConfiguration=app.aotconf"]
     javaLauncher = jdk24Launcher
 }
 
-tasks.register('stopWebApp') {
-    doLast {
+tasks.register("stopWebApp") {
+    doFirst {
         def request = URI.create("http://localhost:8080/actuator/shutdown")
                 .toURL()
                 .openConnection();
@@ -49,7 +39,19 @@ tasks.register('stopWebApp') {
     }
 }
 
-jmh {
-    jvmArgs = extraBootRunJvmArgs
-    jvm = jdk24Launcher.get().getExecutablePath().getAsFile().getAbsolutePath()
+tasks.register('runAotLinkingRecord', JavaExec) {
+    classpath = files(tasks.bootJar)
+    jvmArgs = ["-XX:AOTMode=create", "-XX:AOTConfiguration=app.aotconf", "-XX:AOTCache=main.aot"]
+    javaLauncher = jdk24Launcher
+}
+
+tasks.register('runWithAot', JavaExec) {
+    classpath = files(tasks.bootJar)
+    jvmArgs = ["-XX:AOTCache=main.aot", "-XX:AOTMode=on"]
+    javaLauncher = jdk24Launcher
+}
+
+tasks.register('runWithoutAot', JavaExec) {
+    classpath = files(tasks.bootJar)
+    javaLauncher = jdk24Launcher
 }
