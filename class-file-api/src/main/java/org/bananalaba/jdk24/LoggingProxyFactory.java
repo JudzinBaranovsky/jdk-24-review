@@ -9,9 +9,6 @@ import static java.lang.constant.ConstantDescs.CD_int;
 import static java.lang.constant.ConstantDescs.CD_void;
 import java.lang.constant.MethodTypeDesc;
 import java.lang.reflect.AccessFlag;
-import java.security.SecureClassLoader;
-import java.util.HashMap;
-import java.util.Map;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -22,7 +19,7 @@ public class LoggingProxyFactory {
 
     @NonNull
     private final Logger logger;
-    private final InMemoryClassLoader classLoader = new InMemoryClassLoader(getClass().getClassLoader());
+    private final GeneratedCodeClassLoader classLoader = new GeneratedCodeClassLoader(getClass().getClassLoader());
 
     @SneakyThrows
     public <T> T wrap(@NonNull final Class<T> beanType) {
@@ -97,32 +94,7 @@ public class LoggingProxyFactory {
         });
 
         var fullName = type.getName() + "$LoggingProxy";
-        classLoader.putByteCode(fullName, byteCode);
-        return (Class<T>) classLoader.loadClass(fullName);
-    }
-
-    private static class InMemoryClassLoader extends SecureClassLoader {
-
-        private final Map<String, byte[]> byteCodeCache = new HashMap<>();
-
-        public InMemoryClassLoader(final ClassLoader parent) {
-            super(parent);
-        }
-
-        void putByteCode(final String classFullName, final byte[] code) {
-            byteCodeCache.put(classFullName, code);
-        }
-
-        @Override
-        protected Class<?> findClass(final String name) throws ClassNotFoundException {
-            byte[] classBytes = byteCodeCache.get(name);
-            if (classBytes != null) {
-                return defineClass(name, classBytes, 0, classBytes.length);
-            }
-
-            return super.findClass(name);
-        }
-
+        return (Class<T>) classLoader.define(fullName, byteCode);
     }
 
 }
