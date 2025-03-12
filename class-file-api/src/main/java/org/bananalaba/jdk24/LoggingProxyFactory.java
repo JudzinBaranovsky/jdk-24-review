@@ -10,6 +10,8 @@ import static java.lang.constant.ConstantDescs.CD_int;
 import static java.lang.constant.ConstantDescs.CD_void;
 import java.lang.constant.MethodTypeDesc;
 import java.lang.reflect.AccessFlag;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -35,10 +37,13 @@ public class LoggingProxyFactory {
     private final Logger logger;
     private final GeneratedCodeClassLoader classLoader = new GeneratedCodeClassLoader(getClass().getClassLoader());
 
+    private final Map<Class<?>, Class<?>> proxyCache = new ConcurrentHashMap<>();
+
     @SneakyThrows
+    @SuppressWarnings("unchecked")
     public <T> T wrap(@NonNull final Class<T> beanType) {
-        var proxyType = generateProxyType(beanType);
-        return proxyType.getConstructor(Logger.class).newInstance(logger);
+        var proxyType = proxyCache.computeIfAbsent(beanType, this::generateProxyType);
+        return (T) proxyType.getConstructor(Logger.class).newInstance(logger);
     }
 
     @SneakyThrows
