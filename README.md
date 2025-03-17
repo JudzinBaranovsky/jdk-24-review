@@ -9,9 +9,8 @@ Usage (assuming the current directory is the project root):
 1. `./gradlew :aot-benchmark:bootJar`
 2. `start-aot-record.bat` - this will open a separate console with the app
 3. `record-aot-archive.bat` - this will automatically stop the app from step 2 once done
-4. benchmark - unfortunately you have to check the startup numbers manually as AOT is very hostile to any classpath changes and refuses to work with such tool as JMH without extensive customisation
-   a`./gradlew :aot-benchmark:runWithoutAot`
-   b`./gradlew :aot-benchmark:runWithAot`
+4. run `./gradlew :aot-benchmark:coldStartTest`
+5. check `aot-benchmark/build/results/jmh/results.txt`
 
 # Class File API
 The `class-file-api` module contains examples of how to use the Class File API to generate a logging proxy for an existing class.

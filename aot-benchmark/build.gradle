@@ -1,7 +1,10 @@
 plugins {
     id 'org.springframework.boot' version "3.3.5"
     id 'io.spring.dependency-management' version "1.1.6"
+    id "me.champeau.jmh" version "0.7.2"
 }
+
+import me.champeau.jmh.ParameterConverter
 
 dependencies {
     implementation "org.springframework.boot:spring-boot-starter-web"
@@ -55,3 +58,35 @@ tasks.register('runWithoutAot', JavaExec) {
     classpath = files(tasks.bootJar)
     javaLauncher = jdk24Launcher
 }
+
+tasks.register("coldStartTest") {
+    doLast {
+        var classPath = getObjects().fileCollection()
+        classPath.from(tasks.bootJar)
+        classPath.from(configurations.findByName("jmhRuntimeClasspath"))
+        classPath.from(tasks.jmhJar)
+        classPath.from(configurations.findByName("testRuntimeClasspath"))
+
+        var jvmArgs = []
+        ParameterConverter.collectParameters(tasks.jmh, jvmArgs)
+
+        var tmpDir = getTemporaryDir()
+
+        var run = getProviders().javaexec(spec -> {
+            spec.setClasspath(classPath)
+            spec.setWorkingDir(project.projectDir)
+            spec.getMainClass().set("org.openjdk.jmh.Main")
+            spec.args(jvmArgs)
+            spec.systemProperty("java.io.tmpdir", tmpDir.getAbsolutePath())
+            spec.environment(getEnvironment())
+            spec.executable(jdk24Launcher.get().getExecutablePath().getAsFile())
+        })
+
+        run.getResult().get().assertNormalExitValue()
+        var out = run.getStandardOutput().getAsText().get()
+        var error = run.getStandardError().getAsText().get()
+        println out
+        println error
+    }
+}
+tasks.findByName("coldStartTest").dependsOn(tasks.jmhJar)
