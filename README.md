@@ -7,8 +7,8 @@ running it in different AOT modes.
 
 Usage (assuming the current directory is the project root):
 1. `./gradlew :aot-benchmark:bootJar`
-2. `start-aot-record.bat` - this will open a separate console with the app
-3. `record-aot-archive.bat` - this will automatically stop the app from step 2 once done
+2. `./start-aot-record.bat` - this will open a separate console with the app
+3. `./record-aot-archive.bat` - this will automatically stop the app from step 2 once done
 4. run `./gradlew :aot-benchmark:coldStartTest`
 5. check `aot-benchmark/build/results/jmh/results.txt`
 
