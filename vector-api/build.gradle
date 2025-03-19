@@ -1,3 +1,7 @@
+plugins {
+    id "me.champeau.jmh" version "0.7.2"
+}
+
 tasks.withType(JavaCompile).each {
     it.options.compilerArgs.addAll(List.of("--enable-preview", "--add-modules", "jdk.incubator.vector"))
 }
