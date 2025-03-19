@@ -1,0 +1,13 @@
+plugins {
+    id "me.champeau.jmh" version "0.7.2"
+}
+
+import me.champeau.jmh.JmhBytecodeGeneratorTask;
+
+tasks.withType(JavaCompile).each {
+    it.options.compilerArgs.addAll(List.of("--enable-preview"))
+}
+
+tasks.withType(JmhBytecodeGeneratorTask).each {
+    it.jvmArgs.addAll(List.of("--enable-preview"))
+}
