@@ -5,11 +5,10 @@ This project offer examples of how JDK 24 features can be used.
 *BEFORE YOU BUILD/RUN THE CODE*:
 - as of time of preparing these code samples, Gradle did not support JDK 24 as its runtime
 - so, you have to point your `JAVA_HOME` to a JDK 17-23
-- in addition to that, make sure you have a JDK 24 distribution specified in your Gradle properties, one way of doing that is
-  - add an environment variable `JDK24_RC` that points to the root folder of the JDK 24 of your choice
-  - refer to the variable in `<user_home>/.gradle/gradle.properties`
+- in addition to that, make sure you have a JDK 24 distribution specified in your Gradle properties, one way of doing that is to edit
+`<user_home>/.gradle/gradle.properties` like this (**note**: for Windows, start with `/` before your volume letter and use `/` instead of `\`):
 ```
-org.gradle.java.installations.fromEnv=JDK24_RC
+org.gradle.java.installations.paths=/D:/sdk/openjdk-24-rc-06-02-25
 ```
 
 # Class File API

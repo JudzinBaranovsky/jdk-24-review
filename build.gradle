@@ -4,12 +4,20 @@ subprojects {
     version = "$rev_project"
 
     apply plugin: 'java'
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(24)
+        }
+    }
 
-    sourceCompatibility = '1.23'
+    sourceCompatibility = '1.24'
 
     repositories {
         mavenLocal()
         mavenCentral()
+        maven {
+            url "https://projectlombok.org/edge-releases"
+        }
     }
 
     tasks.withType(JavaCompile).each {
